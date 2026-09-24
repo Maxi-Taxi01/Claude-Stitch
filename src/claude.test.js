@@ -29,4 +29,33 @@ describe('claude module', () => {
     assert.strictEqual(typeof client.messages.create, 'function');
     delete process.env.ANTHROPIC_API_KEY;
   });
+
+  it('defaults to a model that is still available', () => {
+    const { DEFAULT_MODEL } = require('./claude');
+    assert.strictEqual(DEFAULT_MODEL, 'claude-haiku-4-5');
+  });
+
+  it('extractText returns the text when it follows a thinking block', () => {
+    const { extractText } = require('./claude');
+    const response = {
+      content: [
+        { type: 'thinking', thinking: '', signature: 'sig' },
+        { type: 'text', text: 'Hello' },
+        { type: 'text', text: ' there' },
+      ],
+    };
+    assert.strictEqual(extractText(response), 'Hello there');
+  });
+
+  it('extractText throws when the response has no text blocks', () => {
+    const { extractText } = require('./claude');
+    assert.throws(
+      () => extractText({ content: [{ type: 'thinking', thinking: '' }] }),
+      /Unexpected response format from Claude API/
+    );
+    assert.throws(
+      () => extractText({ content: [] }),
+      /Unexpected response format from Claude API/
+    );
+  });
 });
