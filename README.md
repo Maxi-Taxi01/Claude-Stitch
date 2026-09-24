@@ -43,7 +43,7 @@ const reply = await sendMessage('Hello, Claude!');
 console.log(reply);
 ```
 
-`sendMessage` accepts an optional second argument for overriding the model or `maxTokens`:
+By default `sendMessage` uses `claude-haiku-4-5` with `maxTokens` set to 1024. It accepts an optional second argument for overriding the model or `maxTokens`:
 
 ```js
 const reply = await sendMessage('Summarise this text …', {
